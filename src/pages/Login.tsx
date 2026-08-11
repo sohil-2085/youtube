@@ -5,6 +5,7 @@ import {useSessionToken} from "../utils/sessionStorage"
 function Login() {
   const navigate = useNavigate();
   const {setToken} = useSessionToken()
+  const api = import.meta.env.VITE_API;
   // const [formState, setFormState] = React.useState({
   //   email: "",
   //   password: "",
@@ -24,7 +25,7 @@ function Login() {
     const email = formData.get("email");
     const password = formData.get("password");
     console.log(email, password);
-    const url = "https://yt-assesment.onrender.com/api/v1/auth/login";
+    const url = `${api}/auth/login`;
     const sendData = await fetch(url, {
       method: "post",
       headers: {

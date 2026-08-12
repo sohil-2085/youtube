@@ -1,6 +1,6 @@
-import React from "react";
+
 import { useParams } from "react-router-dom";
-import { fetchOneVideo, fetchVideos } from "../utils/api";
+import { fetchOneVideo } from "../utils/api";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import Header from "../components/Header";
 import ReactPlayer from "react-player";

@@ -1,4 +1,4 @@
-import React from "react";
+
 import { Link } from "react-router-dom";
 
 
@@ -53,7 +53,7 @@ function Navbar() {
               <input
                 type="search"
                 id="search"
-                className="block w-[500px] p-3 ps-9 bg-neutral-secondary-medium border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-white"
+                className="block w-125 p-3 ps-9 bg-neutral-secondary-medium border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-white"
                 placeholder="Search"
                 required
               />

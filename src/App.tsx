@@ -9,6 +9,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Video from "./pages/Video";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+// import VideoCard from "./components/VideoCard";
 
 function App() {
   const router = createBrowserRouter(
@@ -17,6 +18,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/video/:id" element={<Video />} />
+        {/* <Route path="/videoCard" element={<VideoCard />} /> */}
       </Route>,
     ),
   );

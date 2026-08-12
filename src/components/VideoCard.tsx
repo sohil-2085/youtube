@@ -1,11 +1,26 @@
-import React from 'react'
+import React from "react";
 
-function VideoCard() {
-  return (
-    <div>
-      Video Card
-    </div>
-  )
+interface videoData {
+  thumbnail: string;
+  title: string;
+  category: string;
+  viewCount: number;
+  likeCount: number;
 }
 
-export default VideoCard
+function VideoCard({
+  thumbnail,
+  title,
+  category,
+  viewCount,
+  likeCount,
+}: videoData) {
+  console.log(thumbnail, title, category, viewCount, likeCount);
+  return (
+    <>
+      <div></div>
+    </>
+  );
+}
+
+export default VideoCard;

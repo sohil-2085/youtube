@@ -8,6 +8,7 @@ import Layout from "./Layout";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Video from "./pages/Video";
+import Profile from "./pages/Profile";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 // import VideoCard from "./components/VideoCard";
 
@@ -15,9 +16,10 @@ function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route path="/" element={<Layout />}>
-        <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Home />} />
         <Route path="/video/:id" element={<Video />} />
+        <Route path="/profile" element={<Profile />} />
         {/* <Route path="/videoCard" element={<VideoCard />} /> */}
       </Route>,
     ),

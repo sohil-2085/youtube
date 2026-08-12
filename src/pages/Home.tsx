@@ -14,7 +14,7 @@ interface video {
   title: string;
   viewCount: number;
   likeCount: number;
-  videoKey: string
+  videoKey: string;
 }
 
 function Home() {
@@ -31,13 +31,13 @@ function Home() {
 
   useEffect(() => {
     if (!authToken) {
-      toast("Login Required")
+      toast("Login Required");
       navigate("/login");
     }
   }, []);
 
   if (isPending) return <h1>Loading...</h1>;
-  if (isError) return error;
+  if (isError) return <h1>Error: {error.message}</h1>;
 
   console.log(data.data);
 
@@ -66,7 +66,6 @@ function Home() {
               viewCount={video.viewCount}
               likeCount={video.likeCount}
             />
-          
           </Link>
         ))}
         <Toaster />

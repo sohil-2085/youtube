@@ -1,10 +1,13 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import {useSessionToken} from "../utils/sessionStorage"
+import { useSessionToken } from "../utils/sessionStorage";
+import toast, { Toaster } from "react-hot-toast";
+
+// import toast, { Toaster } from "react-hot-toast";
 
 function Login() {
   const navigate = useNavigate();
-  const {setToken} = useSessionToken()
+  const { setToken } = useSessionToken();
   const api = import.meta.env.VITE_API;
   // const [formState, setFormState] = React.useState({
   //   email: "",
@@ -24,7 +27,6 @@ function Login() {
     const formData = new FormData(form);
     const email = formData.get("email");
     const password = formData.get("password");
-    console.log(email, password);
     const url = `${api}/auth/login`;
     const sendData = await fetch(url, {
       method: "post",
@@ -37,13 +39,15 @@ function Login() {
         password: password,
       }),
     });
-    if (!sendData.ok) {
-      return alert("auth api problem");
-    }
     const data = await sendData.json();
-    console.log(data.data.accessToken);
-    setToken(data.data.accessToken)
-    alert("Login Successful");
+    console.log("print", data);
+    if (!data?.success) {
+      console.log("test");
+      toast("Error");
+      return;
+    }
+    setToken(data.data.accessToken);
+    toast.success("Login Successfully");
     navigate("/");
   };
 
@@ -80,6 +84,7 @@ function Login() {
             </button>
           </form>
         </div>
+        <Toaster />
       </div>
     </>
   );

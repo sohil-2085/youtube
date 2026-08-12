@@ -1,8 +1,26 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import { fetchVideos, fetchOneVideo } from "../utils/api";
+import { fetchOneVideo, fetchVideos } from "../utils/api";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import Header from "../components/Header";
+import ReactPlayer from "react-player";
+// import "@videojs/react/video/skin.css";
+// import { createPlayer, videoFeatures } from "@videojs/react";
+// import { VideoSkin, Video } from "@videojs/react/video";
+import {
+  MediaController,
+  MediaControlBar,
+  MediaTimeRange,
+  MediaTimeDisplay,
+  MediaVolumeRange,
+  MediaPlaybackRateButton,
+  MediaPlayButton,
+  MediaSeekBackwardButton,
+  MediaSeekForwardButton,
+  MediaMuteButton,
+  MediaFullscreenButton,
+} from "media-chrome/react";
+import Recomended from "../components/Recomended";
 
 // interface videoData {
 //   thumbnail: string;
@@ -12,38 +30,67 @@ import Header from "../components/Header";
 //   likeCount: number;
 // }
 
-function Video() {
+function VideoPage() {
   const authToken: string = sessionStorage.getItem("auth_token") || "";
   const { id } = useParams();
-  // console.log(id);
-
-  // const videoData = async () => {
-  //   const res = await fetchOneVideo(id, authToken)
-  //   return res
-  // }
   const { data } = useQuery({
     queryKey: ["video", id],
     queryFn: () => fetchOneVideo(id || "", authToken),
     enabled: !!id && !!authToken,
     placeholderData: keepPreviousData,
   });
-  console.log(data)
+  console.log(data);
 
   if (!data?.data) return <h1>Loading...</h1>;
+  let pip = false;
+  window.addEventListener("keypress", (e) => {
+    if (e.code === "KeyI") {
+      pip = true;
+    }
+    console.log(e, pip);
+  });
 
   return (
     <>
       <Header />
-      <div className="bg-slate-900 grid grid-cols-2 p-10 h-screen text-white">
-        <div>
-          <video
-            controls
-            src={`https://test-dev-sena.s3.ap-south-1.amazonaws.com/${data.data.videoKey}`}
-          ></video>
+      <div className="bg-slate-900 grid grid-cols-3 p-10 h-screen text-white gap-18 ">
+        <div className="col-span-2">
+          <MediaController
+            style={{
+              width: "100%",
+              aspectRatio: "16/9",
+            }}
+          >
+            <ReactPlayer
+              slot="media"
+              src={`https://test-dev-sena.s3.ap-south-1.amazonaws.com/${data.data.videoKey}`}
+              controls={false}
+              style={{
+                width: "100%",
+                height: "100%",
+              }}
+              light={`https://test-dev-sena.s3.ap-south-1.amazonaws.com/${data.data.thumbnailKey}`}
+              autoPlay
+              pip={pip}
+            ></ReactPlayer>
+            <MediaControlBar>
+              <MediaPlayButton />
+              <MediaSeekBackwardButton seekOffset={10} />
+              <MediaSeekForwardButton seekOffset={10} />
+              <MediaTimeRange />
+              <MediaTimeDisplay showDuration />
+              <MediaMuteButton />
+              <MediaVolumeRange />
+              <MediaPlaybackRateButton />
+              <MediaFullscreenButton />
+            </MediaControlBar>
+          </MediaController>
           <div className="flex justify-between">
             <div>
               <h1 className="text-3xl font-bold mt-4">{data.data.title}</h1>
-              <p className="mt-2 bg-gray-700 p-2 rounded-lg">{data.data.description}</p>
+              <p className="mt-2 bg-gray-700 p-2 rounded-lg">
+                {data.data.description}
+              </p>
             </div>
             <div className="mt-4 flex gap-8">
               <div className="flex gap-2">
@@ -88,10 +135,12 @@ function Video() {
             </div>
           </div>
         </div>
-        <div></div>
+        <div className="overflow-scroll">
+          <Recomended />
+        </div>
       </div>
     </>
   );
 }
 
-export default Video;
+export default VideoPage;

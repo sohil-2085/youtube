@@ -38,3 +38,14 @@ export const fetchOneVideo = async (id: string, auth_token: string) => {
 
   return res.json();
 };
+export const fetchRecomendedVideos = async (id: string, auth_token: string) => {
+  const res = await fetch(`${baseUrl}/videos/${id}/recommended`, {
+    method: "get",
+    headers: {
+      Authorization: `Bearer ${auth_token}`,
+    },
+  });
+  if (!res.ok) throw new Error("Error");
+
+  return res.json();
+};

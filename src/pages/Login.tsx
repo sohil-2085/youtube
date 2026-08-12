@@ -47,7 +47,7 @@ function Login() {
       return;
     }
     setToken(data.data.accessToken);
-    toast("Login Successfully");
+    toast.success("Login Successfully");
     navigate("/");
   };
 

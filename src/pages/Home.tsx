@@ -1,11 +1,10 @@
 import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  keepPreviousData,
-  useQuery,
-} from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { fetchVideos } from "../utils/api";
 import Header from "../components/Header";
+import toast, { Toaster } from "react-hot-toast";
+import VideoCard from "../components/VideoCard";
 // import VideoCard from "../components/VideoCard";
 
 interface video {
@@ -15,6 +14,7 @@ interface video {
   title: string;
   viewCount: number;
   likeCount: number;
+  videoKey: string
 }
 
 function Home() {
@@ -31,6 +31,7 @@ function Home() {
 
   useEffect(() => {
     if (!authToken) {
+      toast("Login Required")
       navigate("/login");
     }
   }, []);
@@ -58,30 +59,17 @@ function Home() {
             key={video.id}
             className="text-white hover:bg-slate-600 hover:ease-in-out transition-all duration-500 hover:translate-x-3 hover:p-2 rounded-lg"
           >
-            {/* <VideoCard
+            <VideoCard
               thumbnail={`https://test-dev-sena.s3.ap-south-1.amazonaws.com/${video.thumbnailKey}`}
               title={video.title}
               category={video.category}
               viewCount={video.viewCount}
               likeCount={video.likeCount}
-            /> */}
-            <div className="w-full h-48 overflow-hidden rounded-lg">
-              <img
-                src={`https://test-dev-sena.s3.ap-south-1.amazonaws.com/${video.thumbnailKey}`}
-                alt="thumbnail"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="flex flex-col p-5 gap-2">
-              <h1 className="text-xl font-bold">{video.title}</h1>
-              <h2 className="font-semibold opacity-60">{video.category}</h2>
-              <div className="flex justify-between opacity-50">
-                <span>{video.viewCount} Liked</span>
-                <span>{video.likeCount} Views</span>
-              </div>
-            </div>
+            />
+          
           </Link>
         ))}
+        <Toaster />
       </div>
     </>
   );

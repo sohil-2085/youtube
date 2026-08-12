@@ -1,4 +1,5 @@
 import React from "react";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 function Profile() {
@@ -8,8 +9,9 @@ function Profile() {
       return;
     }
     sessionStorage.removeItem("auth_token");
-    navigate("/");
-    window.location.reload();
+    toast.success("Logout Successfully")
+    navigate("/login");
+    // window.location.reload();
   };
   return (
     <div>

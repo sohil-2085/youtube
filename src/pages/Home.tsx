@@ -3,10 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import {
   keepPreviousData,
   useQuery,
-  useQueryClient,
 } from "@tanstack/react-query";
 import { fetchVideos } from "../utils/api";
-import "./Home.css";
+import Header from "../components/Header";
 // import VideoCard from "../components/VideoCard";
 
 interface video {
@@ -51,6 +50,7 @@ function Home() {
 
   return (
     <>
+      <Header />
       <div className="grid grid-cols-4 p-12 gap-10 bg-slate-900">
         {data.data.map((video: video) => (
           <Link

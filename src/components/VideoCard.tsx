@@ -4,6 +4,7 @@ interface videoData {
   category: string;
   viewCount: number;
   likeCount: number;
+  owner: string
 }
 
 function VideoCard({
@@ -12,6 +13,7 @@ function VideoCard({
   category,
   viewCount,
   likeCount,
+  owner
 }: videoData) {
   return (
     <div className=" ">
@@ -29,6 +31,7 @@ function VideoCard({
           <span>{likeCount} Liked</span>
           <span>{viewCount} Views</span>
         </div>
+        <div>{owner}</div>
       </div>
     </div>
   );

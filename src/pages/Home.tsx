@@ -5,6 +5,7 @@ import { fetchVideos, fetchAccessToken } from "../utils/api";
 import Header from "../components/Header";
 import toast, { Toaster } from "react-hot-toast";
 import VideoCard from "../components/VideoCard";
+import Spinner from "../components/Spinner";
 // import VideoCard from "../components/VideoCard";
 
 interface video {
@@ -49,7 +50,7 @@ function Home() {
   }, []);
   console.log("test", error);
 
-  if (isPending) return <h1>Loading...</h1>;
+  if (isPending) return <Spinner/>;
   if (isError) return <h1>Error: {error.message}</h1>;
 
   console.log(data.data);
@@ -78,6 +79,7 @@ function Home() {
               category={video.category}
               viewCount={video.viewCount}
               likeCount={video.likeCount}
+              owner={video.owner.name}
             />
           </Link>
         ))}

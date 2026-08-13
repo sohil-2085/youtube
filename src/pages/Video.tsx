@@ -23,6 +23,7 @@ import Recomended from "../components/Recomended";
 import { useEffect, useState } from "react";
 import "./Video.css";
 import { useNavigate } from "react-router-dom";
+import Spinner from "../components/Spinner";
 
 // interface videoData {
 //   thumbnail: string;
@@ -68,7 +69,7 @@ function VideoPage() {
     };
   }, [navigate]);
 
-  if (!data?.data) return <h1>Loading...</h1>;
+  if (!data?.data) return <div className="w-full mt-12 m-auto"><Spinner /></div>;
 
   return (
     <>

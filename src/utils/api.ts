@@ -102,3 +102,22 @@ export const uploadImage = async (auth_token: string, file) => {
   if (!res.ok) return res;
   return res.json();
 };
+export const uploadVideo = async (auth_token: string, file) => {
+  console.log("file", file);
+  const res = await fetch(`${baseUrl}/uploads/videos/initiate`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${auth_token}`,
+    },
+    body: JSON.stringify({
+      fileName: file.name,
+      fileSize: file.size,
+      contentType: file.type,
+    }),
+  });
+  console.log("inner", res);
+  if (!res.ok) return res;
+  return res.json();
+};

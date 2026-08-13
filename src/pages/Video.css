@@ -1,0 +1,11 @@
+.mini_player_title {
+  display: inline-block;
+  background-color: black;
+  font-weight: bolder;
+  padding: 12px;
+  font-size: 18px;
+  position: fixed;
+  right: 10px;
+  bottom: 220px;
+  z-index: 1;
+}

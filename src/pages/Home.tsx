@@ -31,7 +31,7 @@ function Home() {
 
   useEffect(() => {
     if (!authToken) {
-      toast("Login Required");
+      toast.error("Login Required");
       navigate("/login");
     }
   }, []);

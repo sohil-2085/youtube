@@ -66,7 +66,7 @@ function VideoPage() {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, []);
+  }, [navigate]);
 
   if (!data?.data) return <h1>Loading...</h1>;
 

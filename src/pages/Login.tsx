@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useSessionToken } from "../utils/sessionStorage";
+import { useSessionToken, useRefreshToken } from "../utils/sessionStorage";
 import toast, { Toaster } from "react-hot-toast";
 
 // import toast, { Toaster } from "react-hot-toast";
@@ -8,6 +8,7 @@ import toast, { Toaster } from "react-hot-toast";
 function Login() {
   const navigate = useNavigate();
   const { setToken } = useSessionToken();
+  const { setRefreshToken } = useRefreshToken();
   const api = import.meta.env.VITE_API;
   // const [formState, setFormState] = React.useState({
   //   email: "",
@@ -47,7 +48,8 @@ function Login() {
       return;
     }
     setToken(data.data.accessToken);
-    toast.success("Login Successfully", );
+    setRefreshToken(data.data.refreshToken);
+    toast.success("Login Successfully");
     navigate("/");
   };
 

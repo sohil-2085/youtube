@@ -22,6 +22,7 @@ import {
 import Recomended from "../components/Recomended";
 import { useEffect, useState } from "react";
 import "./Video.css";
+import { useNavigate } from "react-router-dom";
 
 // interface videoData {
 //   thumbnail: string;
@@ -40,6 +41,7 @@ function VideoPage() {
     enabled: !!id && !!authToken,
     placeholderData: keepPreviousData,
   });
+  const navigate = useNavigate();
   console.log(data);
 
   const [isMiniPlayer, setIsMiniPlayer] = useState(false);
@@ -55,6 +57,7 @@ function VideoPage() {
       console.log(event.key);
       if (event.key.toLowerCase() === "i") {
         setIsMiniPlayer((prev) => !prev);
+        navigate(-1);
       }
     };
 

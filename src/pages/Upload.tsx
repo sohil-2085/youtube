@@ -17,6 +17,7 @@ function Upload() {
     const image = formData.get("image") || null;
     const video: FormDataEntryValue = formData.get("video") || "";
     console.log("image", image);
+    console.log("video", video);
     const data = await uploadImage(authToken, image);
     const videoData = await uploadVideo(authToken, video);
     console.log("data", data);
@@ -45,38 +46,56 @@ function Upload() {
     const uploadId = videoData.data.uploadId;
     const CHUNK_SIZE = 5 * 1024 * 1024;
     console.log(partSize, totalParts, uploadId);
+    const parts = new Array();
     for (let partNumbers = 1; partNumbers <= totalParts; partNumbers++) {
       console.log("hdfkewggigik");
       const start = (partNumbers - 1) * CHUNK_SIZE;
-      const end = Math.min(start + CHUNK_SIZE, videoData.size);
-      // const fileChunk = videoData.slice(start, end);
+      const end = Math.min(start + CHUNK_SIZE, video.size);
+      const fileChunk = video.slice(start, end);
 
       const uploadPartResponse = await axios.post(
         `https://yt-assesment.onrender.com/api/v1/uploads/videos/${uploadId}/parts/presign`,
+        {
+          partNumbers: [partNumbers],
+        },
         {
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
             Authorization: `Bearer ${authToken}`,
           },
-          data: {
-            partNumbers,
-          },
         },
       );
-      console.log("sjdhsjdh", uploadPartResponse);
+      console.log(uploadPartResponse.data.data?.[0].url);
+        let res2 = await axios.put(`${uploadPartResponse.data.data?.[0].url}`, fileChunk);
+        parts.push({
+          partNumber: partNumbers,
+          eTag: res2.headers.get("etag").replace(/['"]+/g, ""),
+        });
+        console.log("rtt",res2.headers.get("etag").replace(/['"]+/g, ""))
+        console.log("sdsd",res2.headers)
 
-      //       parts.push({
-      //         ETag: uploadPartResponse.data.ETag,
-      //         PartNumbers: partNumbers,
-      //       });
-      //       resolve();
-      //     };
-      //     reader.onerror = reject;
-      //   });
-      // };
-
+      
       // await uploadPart();
+    }
+    const options = {
+      method: "POST",
+      url: `https://yt-assesment.onrender.com/api/v1/uploads/videos/${uploadId}/complete`,
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${authToken}`,
+      },
+      data: {
+        parts
+      },
+    };
+
+    try {
+      const { data } = await axios.request(options);
+      console.log(data);
+    } catch (error) {
+      console.error(error);
     }
 
     // Complete the multipart upload

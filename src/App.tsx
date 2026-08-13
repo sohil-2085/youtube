@@ -10,6 +10,7 @@ import Login from "./pages/Login";
 import Video from "./pages/Video";
 import Profile from "./pages/Profile";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import Upload from "./pages/Upload";
 // import VideoCard from "./components/VideoCard";
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/video/:id" element={<Video />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/upload" element={<Upload />} />
         {/* <Route path="/videoCard" element={<VideoCard />} /> */}
       </Route>,
     ),

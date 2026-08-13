@@ -1,7 +1,7 @@
-import  { useEffect } from "react";
+import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { fetchVideos } from "../utils/api";
+import { fetchVideos, fetchAccessToken } from "../utils/api";
 import Header from "../components/Header";
 import toast, { Toaster } from "react-hot-toast";
 import VideoCard from "../components/VideoCard";
@@ -20,6 +20,7 @@ interface video {
 function Home() {
   const navigate = useNavigate();
   const authToken: string = sessionStorage.getItem("auth_token") || "";
+  const refreshToken: string = sessionStorage.getItem("session_token") || "";
 
   // const queryClient = useQueryClient();
 
@@ -29,12 +30,24 @@ function Home() {
     placeholderData: keepPreviousData,
   });
 
+  const fetchNewTokens = async () => {
+    if (!refreshToken) {
+      return;
+    }
+    const data = await fetchAccessToken(refreshToken);
+    console.log(data);
+  };
+
   useEffect(() => {
-    if (!authToken) {
-      toast.error("Login Required");
-      navigate("/login");
+    if (error === null) {
+      if (!refreshToken) {
+        toast.error("Login Required");
+        navigate("/login");
+      }
+      fetchNewTokens();
     }
   }, []);
+  console.log("test", error);
 
   if (isPending) return <h1>Loading...</h1>;
   if (isError) return <h1>Error: {error.message}</h1>;

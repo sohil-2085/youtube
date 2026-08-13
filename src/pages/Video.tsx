@@ -1,6 +1,5 @@
-import React from "react";
 import { useParams } from "react-router-dom";
-import { fetchOneVideo, fetchVideos } from "../utils/api";
+import { fetchOneVideo } from "../utils/api";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import Header from "../components/Header";
 import ReactPlayer from "react-player";
@@ -21,6 +20,8 @@ import {
   MediaFullscreenButton,
 } from "media-chrome/react";
 import Recomended from "../components/Recomended";
+import { useEffect, useState } from "react";
+import "./Video.css";
 
 // interface videoData {
 //   thumbnail: string;
@@ -41,14 +42,30 @@ function VideoPage() {
   });
   console.log(data);
 
+  const [isMiniPlayer, setIsMiniPlayer] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (
+        (event.target as HTMLElement).tagName === "INPUT" ||
+        (event.target as HTMLElement).tagName === "TEXTAREA"
+      ) {
+        return;
+      }
+      console.log(event.key);
+      if (event.key.toLowerCase() === "i") {
+        setIsMiniPlayer((prev) => !prev);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
   if (!data?.data) return <h1>Loading...</h1>;
-  let pip = false;
-  window.addEventListener("keypress", (e) => {
-    if (e.code === "KeyI") {
-      pip = true;
-    }
-    console.log(e, pip);
-  });
 
   return (
     <>
@@ -64,14 +81,13 @@ function VideoPage() {
             <ReactPlayer
               slot="media"
               src={`https://test-dev-sena.s3.ap-south-1.amazonaws.com/${data.data.videoKey}`}
+              // controls={false}
+              pip={isMiniPlayer}
               controls={false}
               style={{
                 width: "100%",
                 height: "100%",
               }}
-              light={`https://test-dev-sena.s3.ap-south-1.amazonaws.com/${data.data.thumbnailKey}`}
-              autoPlay
-              pip={pip}
             ></ReactPlayer>
             <MediaControlBar>
               <MediaPlayButton />
@@ -86,8 +102,17 @@ function VideoPage() {
             </MediaControlBar>
           </MediaController>
           <div className="flex justify-between">
+            {/* <div className={isMiniPlayer ? "mini_player_title" : ""}> */}
             <div>
-              <h1 className="text-3xl font-bold mt-4">{data.data.title}</h1>
+              <h1
+                className={
+                  isMiniPlayer
+                    ? "mini_player_title"
+                    : "sm:text-xl md:text-3xl font-bold mt-4"
+                }
+              >
+                {data.data.title}
+              </h1>
               <p className="mt-2 bg-gray-700 p-2 rounded-lg">
                 {data.data.description}
               </p>

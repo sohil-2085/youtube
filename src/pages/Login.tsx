@@ -42,12 +42,12 @@ function Login() {
     const data = await sendData.json();
     console.log("print", data);
     if (!data?.success) {
-      console.log("test");
-      toast("Error");
+      console.log(data);
+      toast("Error", data.message);
       return;
     }
     setToken(data.data.accessToken);
-    toast.success("Login Successfully");
+    toast.success("Login Successfully", );
     navigate("/");
   };
 

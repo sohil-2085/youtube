@@ -1,5 +1,3 @@
-
-
 interface videoData {
   thumbnail: string;
   title: string;
@@ -28,8 +26,8 @@ function VideoCard({
         <h1 className="text-xl font-bold">{title}</h1>
         <h2 className="font-semibold opacity-60">{category}</h2>
         <div className="flex justify-between opacity-50">
-          <span>{viewCount} Liked</span>
-          <span>{likeCount} Views</span>
+          <span>{likeCount} Liked</span>
+          <span>{viewCount} Views</span>
         </div>
       </div>
     </div>

@@ -98,8 +98,7 @@ export const uploadImage = async (auth_token: string, file) => {
       contentType: file.type,
     }),
   });
-  console.log("inner",res)
+  console.log("inner", res);
   if (!res.ok) return res;
   return res.json();
 };
-

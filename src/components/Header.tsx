@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 
 
@@ -76,6 +75,7 @@ function Navbar() {
             />
           </svg>
         </Link>
+        <Link to="/upload" className="text-white ml-4">Upload</Link>
       </div>
     </>
   );

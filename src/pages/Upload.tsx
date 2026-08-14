@@ -1,5 +1,5 @@
 import toast, { Toaster } from "react-hot-toast";
-import { uploadImage, uploadVideo } from "../utils/api";
+import { uploadImage, uploadVideo, publishVideo } from "../utils/api";
 import { useState } from "react";
 import axios from "axios";
 
@@ -67,15 +67,17 @@ function Upload() {
         },
       );
       console.log(uploadPartResponse.data.data?.[0].url);
-        let res2 = await axios.put(`${uploadPartResponse.data.data?.[0].url}`, fileChunk);
-        parts.push({
-          partNumber: partNumbers,
-          eTag: res2.headers.get("etag").replace(/['"]+/g, ""),
-        });
-        console.log("rtt",res2.headers.get("etag").replace(/['"]+/g, ""))
-        console.log("sdsd",res2.headers)
+      let res2 = await axios.put(
+        `${uploadPartResponse.data.data?.[0].url}`,
+        fileChunk,
+      );
+      parts.push({
+        partNumber: partNumbers,
+        eTag: res2.headers.get("etag").replace(/['"]+/g, ""),
+      });
+      console.log("rtt", res2.headers.get("etag").replace(/['"]+/g, ""));
+      console.log("sdsd", res2.headers);
 
-      
       // await uploadPart();
     }
     const options = {
@@ -87,7 +89,7 @@ function Upload() {
         Authorization: `Bearer ${authToken}`,
       },
       data: {
-        parts
+        parts,
       },
     };
 
@@ -98,6 +100,18 @@ function Upload() {
       console.error(error);
     }
 
+    const publish = await publishVideo(
+      authToken,
+      title,
+      desc,
+      category,
+      videoData.data.key,
+      data.data.key,
+    );
+    if (publish.ok) {
+      toast.success("Video Uploaded Check Home Page 🎉");
+    }
+    console.log("publish", publish);
     // Complete the multipart upload
     //   const completeUploadResponse = await axios.post(
     //     "http://localhost:3001/complete-upload",

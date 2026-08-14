@@ -58,7 +58,7 @@ function VideoPage() {
       console.log(event.key);
       if (event.key.toLowerCase() === "i") {
         setIsMiniPlayer((prev) => !prev);
-        navigate(-1);
+        // navigate(-1);
       }
     };
 

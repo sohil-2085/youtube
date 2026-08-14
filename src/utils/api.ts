@@ -34,8 +34,12 @@ export const getUserDetails = async (email: string) => {
   return res.json();
 };
 
-export const fetchVideos = async (auth_token: string) => {
-  const res = await fetch(`${baseUrl}/videos`, {
+export const fetchVideos = async (
+  auth_token: string,
+  page: number = 1,
+  limit: number = 20,
+) => {
+  const res = await fetch(`${baseUrl}/videos?page=${page}&limit=${limit}`, {
     method: "get",
     headers: {
       Authorization: `Bearer ${auth_token}`,
@@ -120,4 +124,24 @@ export const uploadVideo = async (auth_token: string, file) => {
   console.log("inner", res);
   if (!res.ok) return res;
   return res.json();
+};
+export const publishVideo = async (auth_token: string, title: string, description: string, category: string, videoKey: string, thumbnailKey: string) => {
+  const res = await fetch(`${baseUrl}/videos`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization:
+        `Bearer ${auth_token}`,
+    },
+    body: JSON.stringify({
+      title,
+      description,
+      category,
+      videoKey,
+      thumbnailKey,
+    }),
+  });
+  if(!res.ok) return res
+  return res.json()
 };

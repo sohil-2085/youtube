@@ -4,6 +4,7 @@ import {
   uploadVideo,
   publishVideo,
   getMyVideos,
+  deletVideo,
 } from "../utils/api";
 import { useState } from "react";
 import axios from "axios";
@@ -156,7 +157,10 @@ function Upload() {
     queryFn: () => getMyVideos(authToken),
     placeholderData: keepPreviousData,
   });
-  console.log(data);
+  console.log("hdffsgh", data?.data);
+  const dVideo = async (id) => {
+    await deletVideo(authToken, id);
+  };
   return (
     <>
       <div className="grid grid-cols-3">
@@ -219,23 +223,31 @@ function Upload() {
         <div className="bg-slate-900 col-span-2 p-30 text-white">
           <h1 className="text-3xl font-bold">My Videos</h1>
           <div className="grid grid-cols-3 gap-10 mt-6">
-          {data?.data?.map((video: video) => (
-            <Link
-              to={`/video/${video.id}`}
-              key={video.id}
-              className="text-white hover:bg-slate-600 hover:ease-in-out transition-all duration-500 hover:translate-x-3 hover:p-2 rounded-lg"
-            >
-              <VideoCard
-                thumbnail={`https://test-dev-sena.s3.ap-south-1.amazonaws.com/${video.thumbnailKey}`}
-                title={video.title}
-                category={video.category}
-                viewCount={video.viewCount}
-                likeCount={video.likeCount}
-                owner={video.owner?.name || "Unknown"}
-              />
-            </Link>
-          ))}
-        </div>
+            {data?.data?.map((video: video) => (
+              <div>
+                <Link
+                  to={`/video/${video.id}`}
+                  key={video.id}
+                  className="text-white transition-all duration-500  rounded-lg"
+                >
+                  <VideoCard
+                    thumbnail={`https://test-dev-sena.s3.ap-south-1.amazonaws.com/${video.thumbnailKey}`}
+                    title={video.title}
+                    category={video.category}
+                    viewCount={video.viewCount}
+                    likeCount={video.likeCount}
+                    owner={video.owner?.name || "Unknown"}
+                  />
+                </Link>
+                <button
+                  className="border p-2 text-center ml-4 hover:bg-red-800 cursor-pointer"
+                  onClick={() => dVideo(video.id)}
+                >
+                  Delete
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </>

@@ -163,35 +163,41 @@ export const doLikeInVideos = async (
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization:
-        `Bearer ${auth_token}`,
+      Authorization: `Bearer ${auth_token}`,
     },
     body: JSON.stringify({
       type,
     }),
   });
-  if(!res.ok) return res
-  return res.json()
+  if (!res.ok) return res;
+  return res.json();
 };
 export const SearchVideo = async (text: string) => {
   const token = localStorage.getItem("auth_token");
   try {
     console.log(token);
-    const { data } = await axios.get(
-      `${baseUrl}/videos`,
-      {
-        params: {
-          search: text,
-        },
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${token} `,
-        },
+    const { data } = await axios.get(`${baseUrl}/videos`, {
+      params: {
+        search: text,
       },
-    );
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token} `,
+      },
+    });
     console.log(data);
     return data;
   } catch (error) {
     console.error(error);
   }
+};
+export const getMyVideos = async (auth_token: string) => {
+  const res = await fetch(`${baseUrl}/videos/mine`, {
+    headers: {
+      Accept: "application/json",
+      Authorization: `Bearer ${auth_token}`,
+    },
+  });
+  if (!res.ok) return res;
+  return  res.json();
 };

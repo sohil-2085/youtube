@@ -199,5 +199,17 @@ export const getMyVideos = async (auth_token: string) => {
     },
   });
   if (!res.ok) return res;
-  return  res.json();
+  return res.json();
+};
+export const deletVideo = async (auth_token: string, video_id: string) => {
+  const res = await fetch(`${baseUrl}/videos/${video_id}`, {
+    method: "DELETE",
+    headers: {
+      Accept: "application/json",
+      Authorization: `Bearer ${auth_token}`,
+    },
+  });
+  if (!res.ok) return res;
+  console.log("delete inner", res);
+  return res.json();
 };

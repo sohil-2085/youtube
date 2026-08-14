@@ -1,5 +1,7 @@
 // import axios from "axios";
 
+import axios from "axios";
+
 // const api = axios.create({
 //   baseURL: import.meta.env.VITE_API,
 // });
@@ -88,7 +90,7 @@ export const fetchAccessToken = async (refresh_token: string) => {
 
   return res.json();
 };
-export const uploadImage = async (auth_token: string, file) => {
+export const uploadImage = async (auth_token: string, file: File) => {
   console.log("file", file);
   const res = await fetch(`${baseUrl}/uploads/thumbnails/presign`, {
     method: "POST",
@@ -106,7 +108,7 @@ export const uploadImage = async (auth_token: string, file) => {
   if (!res.ok) return res;
   return res.json();
 };
-export const uploadVideo = async (auth_token: string, file) => {
+export const uploadVideo = async (auth_token: string, file: File) => {
   console.log("file", file);
   const res = await fetch(`${baseUrl}/uploads/videos/initiate`, {
     method: "POST",
@@ -125,14 +127,20 @@ export const uploadVideo = async (auth_token: string, file) => {
   if (!res.ok) return res;
   return res.json();
 };
-export const publishVideo = async (auth_token: string, title: string, description: string, category: string, videoKey: string, thumbnailKey: string) => {
+export const publishVideo = async (
+  auth_token: string,
+  title: string,
+  description: string,
+  category: string,
+  videoKey: string,
+  thumbnailKey: string,
+) => {
   const res = await fetch(`${baseUrl}/videos`, {
     method: "POST",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization:
-        `Bearer ${auth_token}`,
+      Authorization: `Bearer ${auth_token}`,
     },
     body: JSON.stringify({
       title,
@@ -142,6 +150,48 @@ export const publishVideo = async (auth_token: string, title: string, descriptio
       thumbnailKey,
     }),
   });
+  if (!res.ok) return res;
+  return res.json();
+};
+export const doLikeInVideos = async (
+  auth_token: string,
+  type: string,
+  video_id: string,
+) => {
+  const res = await fetch(`${baseUrl}/videos/${video_id}/reaction`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization:
+        `Bearer ${auth_token}`,
+    },
+    body: JSON.stringify({
+      type,
+    }),
+  });
   if(!res.ok) return res
   return res.json()
+};
+export const SearchVideo = async (text: string) => {
+  const token = localStorage.getItem("auth_token");
+  try {
+    console.log(token);
+    const { data } = await axios.get(
+      `${baseUrl}/videos`,
+      {
+        params: {
+          search: text,
+        },
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token} `,
+        },
+      },
+    );
+    console.log(data);
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
 };

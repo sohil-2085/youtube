@@ -11,6 +11,9 @@ interface Video {
   viewCount: number;
   likeCount: number;
   videoKey: string;
+  owner: {
+    name: string;
+  };
 }
 
 function Recomended() {
@@ -25,7 +28,7 @@ function Recomended() {
     gcTime: 5000,
     staleTime: 1000,
   });
-
+  // console.log("build test", data.data)
   return (
     <div>
       {data?.data?.map((video: Video) => (
@@ -40,6 +43,7 @@ function Recomended() {
             category={video.category}
             viewCount={video.viewCount}
             likeCount={video.likeCount}
+            owner={video.owner.name}
           />
         </Link>
       ))}

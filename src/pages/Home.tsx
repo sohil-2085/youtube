@@ -75,7 +75,7 @@ function Home() {
   console.log(data?.data);
   const searching = (e: ChangeEvent<HTMLInputElement>) => {
     if(e.target.value && e.target.value.length > 0){
-      setSearch(e.target.value)
+      // setSearch(e.target.value)
     }
   }
   // const videoObj = {

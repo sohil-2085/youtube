@@ -71,7 +71,7 @@ function VideoPage() {
   }, [navigate]);
 
   const doLike = async () => {
-    const data = await doLikeInVideos(authToken, "LIKE", id);
+    const data = await doLikeInVideos(authToken, "LIKE", String(id));
     setLike(data.data.likeCount);
     console.log("like", data.data.likeCount);
     console.log(data);

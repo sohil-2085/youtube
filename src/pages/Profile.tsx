@@ -1,6 +1,6 @@
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { getUserDetails } from "../utils/api";
+// import { getUserDetails } from "../utils/api";
 
 // interface user {
 //   id: number;

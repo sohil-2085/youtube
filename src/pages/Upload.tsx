@@ -33,13 +33,21 @@ function Upload() {
 
     const form = e.currentTarget;
     const formData = new FormData(form);
-    const title: FormDataEntryValue = formData.get("title") || "";
-    const desc: FormDataEntryValue = formData.get("description") || "";
-    const category: FormDataEntryValue = formData.get("category") || "";
-    const image = formData.get("image") || null;
-    const video: FormDataEntryValue = formData.get("video") || "";
+    const title = String(formData.get("title") ?? "");
+    const desc = String(formData.get("description") ?? "");
+    const category = String(formData.get("category") ?? "");
+    const image = formData.get("image");
+    const video = formData.get("video") as File;
     console.log("image", image);
     console.log("video", video);
+    if (!image || !(image instanceof File)) {
+      toast.error("Please select an image");
+      return;
+    }
+    if (!video || !(video instanceof File)) {
+      toast.error("Please select a video");
+      return;
+    }
     const data = await uploadImage(authToken, image);
     const videoData = await uploadVideo(authToken, video);
     console.log("data", data);
@@ -95,9 +103,9 @@ function Upload() {
       );
       parts.push({
         partNumber: partNumbers,
-        eTag: res2.headers.get("etag").replace(/['"]+/g, ""),
+        eTag: res2.headers["etag"]?.replace(/['"]+/g, "") ?? "",
       });
-      console.log("rtt", res2.headers.get("etag").replace(/['"]+/g, ""));
+      console.log("rtt", res2.headers["etag"]?.replace(/['"]+/g, "") ?? "");
       console.log("sdsd", res2.headers);
 
       // await uploadPart();
@@ -158,8 +166,8 @@ function Upload() {
     placeholderData: keepPreviousData,
   });
   console.log("hdffsgh", data?.data);
-  const dVideo = async (id) => {
-    await deletVideo(authToken, id);
+  const dVideo = async (id: string | number) => {
+    await deletVideo(authToken, String(id));
   };
   return (
     <>

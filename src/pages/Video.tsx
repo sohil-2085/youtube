@@ -87,7 +87,7 @@ function VideoPage() {
   return (
     <>
       <Header />
-      <div className="bg-slate-900 grid grid-cols-3 p-10 h-screen text-white gap-18 ">
+      <div className="bg-slate-900 grid grid-cols-3 p-10 min-h-screen text-white gap-18 ">
         <div className="col-span-2">
           <MediaController
             style={{
@@ -181,7 +181,7 @@ function VideoPage() {
             </div>
           </div>
         </div>
-        <div className="overflow-scroll">
+        <div className="h-screen overflow-scroll">
           <Recomended />
         </div>
       </div>

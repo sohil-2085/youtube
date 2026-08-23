@@ -18,6 +18,43 @@ import axios from "axios";
 // };
 const baseUrl = import.meta.env.VITE_API;
 
+let isRefreshing = false;
+
+async function fetchWithAuth(url: string, options: RequestInit = {}) {
+  let res = await fetch(url, options);
+  
+  if (res.status === 401) {
+    const refreshToken = sessionStorage.getItem("session_token");
+    if (!refreshToken) {
+      window.location.href = "/login";
+      return res;
+    }
+    
+    if (!isRefreshing) {
+      isRefreshing = true;
+      try {
+        const data = await fetchAccessToken(refreshToken);
+        if (data?.data?.accessToken) {
+          sessionStorage.setItem("auth_token", data.data.accessToken);
+          if (data.data.refreshToken) {
+            sessionStorage.setItem("session_token", data.data.refreshToken);
+          }
+          // Retry the original request with the new token
+          const headers = new Headers(options.headers);
+          headers.set("Authorization", `Bearer ${data.data.accessToken}`);
+          res = await fetch(url, { ...options, headers });
+        }
+      } catch (error) {
+        sessionStorage.removeItem("auth_token");
+        sessionStorage.removeItem("session_token");
+        window.location.href = "/login";
+      } finally {
+        isRefreshing = false;
+      }
+    }
+  }
+  return res;
+}
 export const getUserDetails = async (email: string) => {
   const res = await fetch(`${baseUrl}/auth/login`, {
     method: "POST",
@@ -41,7 +78,7 @@ export const fetchVideos = async (
   page: number = 1,
   limit: number = 20,
 ) => {
-  const res = await fetch(`${baseUrl}/videos?page=${page}&limit=${limit}`, {
+  const res = await fetchWithAuth(`${baseUrl}/videos?page=${page}&limit=${limit}`, {
     method: "get",
     headers: {
       Authorization: `Bearer ${auth_token}`,
@@ -52,7 +89,7 @@ export const fetchVideos = async (
   return res.json();
 };
 export const fetchOneVideo = async (id: string, auth_token: string) => {
-  const res = await fetch(`${baseUrl}/videos/${id}`, {
+  const res = await fetchWithAuth(`${baseUrl}/videos/${id}`, {
     method: "get",
     headers: {
       Authorization: `Bearer ${auth_token}`,
@@ -63,7 +100,7 @@ export const fetchOneVideo = async (id: string, auth_token: string) => {
   return res.json();
 };
 export const fetchRecomendedVideos = async (id: string, auth_token: string) => {
-  const res = await fetch(`${baseUrl}/videos/${id}/recommended`, {
+  const res = await fetchWithAuth(`${baseUrl}/videos/${id}/recommended`, {
     method: "get",
     headers: {
       Authorization: `Bearer ${auth_token}`,
@@ -85,14 +122,15 @@ export const fetchAccessToken = async (refresh_token: string) => {
       refreshToken: refresh_token,
     }),
   });
-  console.log(await res.json());
+  const data = await res.json();
+  console.log(data);
   if (!res.ok) throw new Error("Error while fetching new accessToken");
 
-  return res.json();
+  return data;
 };
 export const uploadImage = async (auth_token: string, file: File) => {
   console.log("file", file);
-  const res = await fetch(`${baseUrl}/uploads/thumbnails/presign`, {
+  const res = await fetchWithAuth(`${baseUrl}/uploads/thumbnails/presign`, {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -110,7 +148,7 @@ export const uploadImage = async (auth_token: string, file: File) => {
 };
 export const uploadVideo = async (auth_token: string, file: File) => {
   console.log("file", file);
-  const res = await fetch(`${baseUrl}/uploads/videos/initiate`, {
+  const res = await fetchWithAuth(`${baseUrl}/uploads/videos/initiate`, {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -135,7 +173,7 @@ export const publishVideo = async (
   videoKey: string,
   thumbnailKey: string,
 ) => {
-  const res = await fetch(`${baseUrl}/videos`, {
+  const res = await fetchWithAuth(`${baseUrl}/videos`, {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -158,7 +196,7 @@ export const doLikeInVideos = async (
   type: string,
   video_id: string,
 ) => {
-  const res = await fetch(`${baseUrl}/videos/${video_id}/reaction`, {
+  const res = await fetchWithAuth(`${baseUrl}/videos/${video_id}/reaction`, {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -192,7 +230,7 @@ export const SearchVideo = async (text: string) => {
   }
 };
 export const getMyVideos = async (auth_token: string) => {
-  const res = await fetch(`${baseUrl}/videos/mine`, {
+  const res = await fetchWithAuth(`${baseUrl}/videos/mine`, {
     headers: {
       Accept: "application/json",
       Authorization: `Bearer ${auth_token}`,
@@ -202,7 +240,7 @@ export const getMyVideos = async (auth_token: string) => {
   return res.json();
 };
 export const deletVideo = async (auth_token: string, video_id: string) => {
-  const res = await fetch(`${baseUrl}/videos/${video_id}`, {
+  const res = await fetchWithAuth(`${baseUrl}/videos/${video_id}`, {
     method: "DELETE",
     headers: {
       Accept: "application/json",

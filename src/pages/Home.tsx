@@ -35,6 +35,7 @@ function Home() {
     queryKey: ["videos", currentPage, pageSize],
     queryFn: () => fetchVideos(authToken, currentPage, pageSize),
     placeholderData: keepPreviousData,
+    retry: false,
   });
 
   const videos = data?.data || [];
@@ -46,27 +47,13 @@ function Home() {
   const currentCurrentPage = Math.min(currentPage, totalPages);
   const paginatedVideos = videos;
 
-  const fetchNewTokens = useCallback(async () => {
-    if (!refreshToken) {
-      return;
-    }
-    const data = await fetchAccessToken(refreshToken);
-    console.log(data);
-  }, [refreshToken]);
-
   useEffect(() => {
-    if (error !== null) {
-      return;
-    }
-
     if (!refreshToken) {
       toast.error("Login Required");
       navigate("/login");
       return;
     }
-
-    fetchNewTokens();
-  }, [error, fetchNewTokens, navigate, refreshToken]);
+  }, [navigate, refreshToken]);
   console.log("test", error);
 
   if (isPending) return <Spinner />;
@@ -196,7 +183,10 @@ function Home() {
         <div className="flex items-center justify-center gap-4 mt-8 text-white">
           <button
             type="button"
-            onClick={() => setCurrentPage((page) => Math.max(page - 1, 1))}
+            onClick={() => {
+              setCurrentPage((page) => Math.max(page - 1, 1));
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
             disabled={currentCurrentPage === 1}
             className="px-4 py-2 rounded bg-slate-700 disabled:opacity-50"
           >
@@ -209,9 +199,10 @@ function Home() {
 
           <button
             type="button"
-            onClick={() =>
-              setCurrentPage((page) => Math.min(page + 1, totalPages))
-            }
+            onClick={() => {
+              setCurrentPage((page) => Math.min(page + 1, totalPages));
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
             disabled={currentCurrentPage === totalPages}
             className="px-4 py-2 rounded bg-slate-700 disabled:opacity-50"
           >

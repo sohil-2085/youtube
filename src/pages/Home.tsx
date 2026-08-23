@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useState, type ChangeEvent } from "react";
+import { useEffect, useState, type ChangeEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { fetchVideos, fetchAccessToken } from "../utils/api";
+import { fetchVideos } from "../utils/api";
 
 import toast, { Toaster } from "react-hot-toast";
 import VideoCard from "../components/VideoCard";

@@ -24,6 +24,7 @@ import { useEffect, useState } from "react";
 import "./Video.css";
 import { useNavigate } from "react-router-dom";
 import Spinner from "../components/Spinner";
+import { useMiniPlayer } from "../context/MiniPlayerContext";
 
 // interface videoData {
 //   thumbnail: string;
@@ -46,7 +47,11 @@ function VideoPage() {
   const navigate = useNavigate();
   console.log(data);
 
-  const [isMiniPlayer, setIsMiniPlayer] = useState(false);
+  const { setMiniPlayer } = useMiniPlayer();
+
+  useEffect(() => {
+    setMiniPlayer((prev: any) => prev.isActive ? { ...prev, isActive: false } : prev);
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -58,8 +63,15 @@ function VideoPage() {
       }
       console.log(event.key);
       if (event.key.toLowerCase() === "i") {
-        setIsMiniPlayer((prev) => !prev);
-        // navigate(-1);
+        if (data?.data && id) {
+          setMiniPlayer({ 
+            isActive: true, 
+            videoKey: data.data.videoKey, 
+            title: data.data.title, 
+            videoId: id 
+          });
+          navigate("/");
+        }
       }
     };
 
@@ -68,7 +80,7 @@ function VideoPage() {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [navigate]);
+  }, [navigate, data, id, setMiniPlayer]);
 
   const doLike = async () => {
     const data = await doLikeInVideos(authToken, "LIKE", String(id));
@@ -97,10 +109,9 @@ function VideoPage() {
           >
             <ReactPlayer
               slot="media"
-              src={`https://test-dev-sena.s3.ap-south-1.amazonaws.com/${data.data.videoKey}`}
-              // controls={false}
-              pip={isMiniPlayer}
+              src={data?.data?.videoKey ? `https://test-dev-sena.s3.ap-south-1.amazonaws.com/${data.data.videoKey}` : undefined}
               controls={false}
+              playing={true}
               style={{
                 width: "100%",
                 height: "100%",
@@ -119,15 +130,8 @@ function VideoPage() {
             </MediaControlBar>
           </MediaController>
           <div className="flex justify-between">
-            {/* <div className={isMiniPlayer ? "mini_player_title" : ""}> */}
             <div>
-              <h1
-                className={
-                  isMiniPlayer
-                    ? "mini_player_title"
-                    : "sm:text-xl md:text-3xl font-bold mt-4"
-                }
-              >
+              <h1 className="sm:text-xl md:text-3xl font-bold mt-4">
                 {data.data.title}
               </h1>
               <p className="mt-2 bg-gray-700 p-2 rounded-lg">

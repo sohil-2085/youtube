@@ -99,8 +99,8 @@ export const fetchOneVideo = async (id: string, auth_token: string) => {
 
   return res.json();
 };
-export const fetchRecomendedVideos = async (id: string, auth_token: string) => {
-  const res = await fetchWithAuth(`${baseUrl}/videos/${id}/recommended`, {
+export const fetchRecomendedVideos = async (id: string, auth_token: string, page: number = 1, limit: number = 20) => {
+  const res = await fetchWithAuth(`${baseUrl}/videos/${id}/recommended?page=${page}&limit=${limit}`, {
     method: "get",
     headers: {
       Authorization: `Bearer ${auth_token}`,

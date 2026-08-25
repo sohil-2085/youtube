@@ -25,13 +25,13 @@ function Home() {
   const navigate = useNavigate();
   const authToken: string = sessionStorage.getItem("auth_token") || "";
   const refreshToken: string = sessionStorage.getItem("session_token") || "";
-  // const [search, setSearch] = useState("test");
+  const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 20;
 
   // const queryClient = useQueryClient();
 
-  const { data, isPending, isError, error } = useQuery({
+  const { data, isPending, isError, error, isFetching } = useQuery({
     queryKey: ["videos", currentPage, pageSize],
     queryFn: () => fetchVideos(authToken, currentPage, pageSize),
     placeholderData: keepPreviousData,
@@ -45,8 +45,11 @@ function Home() {
     data?.meta?.totalPages || Math.ceil(totalVideos / pageSize),
   );
   const currentCurrentPage = Math.min(currentPage, totalPages);
-  const paginatedVideos = videos;
-
+  const paginatedVideos = search
+    ? videos.filter((video: video) =>
+        video.title.toLowerCase().includes(search.toLowerCase())
+      )
+    : videos;
   useEffect(() => {
     if (!refreshToken) {
       toast.error("Login Required");
@@ -61,10 +64,8 @@ function Home() {
 
   console.log(data?.data);
   const searching = (e: ChangeEvent<HTMLInputElement>) => {
-    if(e.target.value && e.target.value.length > 0){
-      // setSearch(e.target.value)
-    }
-  }
+    setSearch(e.target.value);
+  };
   // const videoObj = {
   //   thumbnail:`https://test-dev-sena.s3.ap-south-1.amazonaws.com/${video.thumbnailKey}`,
   //             title:video.title,
@@ -94,7 +95,7 @@ function Home() {
           />
           {/* </svg> */}
         </Link>
-        <form className="max-w-md mx-auto">
+        <form className="max-w-md mx-auto" onSubmit={(e) => e.preventDefault()}>
           <label
             htmlFor="search"
             className="block mb-2.5 text-sm font-medium text-heading sr-only "
@@ -161,7 +162,7 @@ function Home() {
         </Link>
       </div>
       <div className="bg-slate-900 min-h-screen p-12">
-        <div className="grid grid-cols-4 gap-10">
+        <div className={`grid grid-cols-4 gap-10 transition-opacity duration-300 ${isFetching ? 'opacity-50 pointer-events-none' : ''}`}>
           {paginatedVideos.map((video: video) => (
             <Link
               to={`/video/${video.id}`}

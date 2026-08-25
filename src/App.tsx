@@ -11,6 +11,7 @@ import Video from "./pages/Video";
 import Profile from "./pages/Profile";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Upload from "./pages/Upload";
+import { MiniPlayerProvider } from "./context/MiniPlayerContext";
 // import VideoCard from "./components/VideoCard";
 
 function App() {
@@ -30,7 +31,9 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router}></RouterProvider>
+      <MiniPlayerProvider>
+        <RouterProvider router={router}></RouterProvider>
+      </MiniPlayerProvider>
     </QueryClientProvider>
   );
 }
